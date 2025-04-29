@@ -41,14 +41,23 @@ const Index = () => {
               setIsStarting(true);
               // Simulating a loading state before navigation
               setTimeout(() => {
-                window.location.href = "/subject-select";
+                window.location.href = "/chat";
               }, 800);
             }}
             className="w-full bg-omni-mint hover:bg-omni-mint/90 text-black font-medium"
           >
-            {isStarting ? "Getting Ready..." : "Let's Go"}
+            {isStarting ? "Getting Ready..." : "Let's Chat with Ollie"}
             {!isStarting && <ArrowRight className="ml-2 h-4 w-4" />}
           </Button>
+          
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            <Link to="/subject-select">
+              <Button variant="outline" className="w-full">Classic Mode</Button>
+            </Link>
+            <Link to="/chat">
+              <Button variant="outline" className="w-full">Chat Mode</Button>
+            </Link>
+          </div>
           
           <div className="pt-4 text-center">
             <p className="text-sm text-gray-500">
