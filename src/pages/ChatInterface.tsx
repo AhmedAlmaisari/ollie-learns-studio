@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Mic, Send, ExternalLink, HelpCircle, Check, X, Dna, Laptop3D } from "lucide-react";
+import { Mic, Send, ExternalLink, HelpCircle, Check, X, Dna, Laptop } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -299,7 +299,7 @@ const ChatInterface = () => {
                       className="max-w-full max-h-full object-cover rounded-lg"
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Laptop3D className="h-12 w-12 text-white drop-shadow-lg" />
+                      <Laptop className="h-12 w-12 text-white drop-shadow-lg" />
                     </div>
                   </div>
                   <div className="space-y-4 max-w-md px-4">
@@ -322,7 +322,7 @@ const ChatInterface = () => {
             });
             setShowPanel(true);
           },
-          icon: <Laptop3D className="h-4 w-4" />
+          icon: <Laptop className="h-4 w-4" />
         },
         {
           label: "AR View",
