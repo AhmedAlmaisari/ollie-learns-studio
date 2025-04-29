@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Quiz from "./pages/Quiz";
 import Workspace from "./pages/Workspace";
 import ChatInterface from "./pages/ChatInterface";
+import CustomContent from "./pages/CustomContent";
 import NotFound from "./pages/NotFound";
 
 // Create a client
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/workspace" element={<Workspace />} />
           <Route path="/chat" element={<ChatInterface />} />
+          <Route path="/custom-content" element={<CustomContent />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

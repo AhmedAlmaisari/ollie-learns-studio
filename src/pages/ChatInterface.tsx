@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Mic, Send, ExternalLink, HelpCircle, Check, X, Dna, Laptop } from "lucide-react";
+import { Mic, Send, ExternalLink, HelpCircle, Check, X, Dna, Laptop, Camera, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -158,6 +158,20 @@ const ChatInterface = () => {
     }
     
     setMessages(prev => [...prev, response]);
+  };
+
+  const handleCameraClick = () => {
+    toast({
+      title: "Camera feature",
+      description: "This would open your camera in a real implementation."
+    });
+  };
+
+  const handleImageClick = () => {
+    toast({
+      title: "Upload image",
+      description: "This would open an image picker in a real implementation."
+    });
   };
 
   const generateDNAArtifact = () => {
@@ -624,6 +638,24 @@ const ChatInterface = () => {
                 onClick={handleVoiceInput}
               >
                 <Mic className="h-5 w-5" />
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                onClick={handleCameraClick}
+              >
+                <Camera className="h-5 w-5" />
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                onClick={handleImageClick}
+              >
+                <Image className="h-5 w-5" />
               </Button>
               
               <Input
