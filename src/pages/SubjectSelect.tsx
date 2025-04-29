@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Brain, Calculator, Flask, Globe, Lightbulb, ArrowRight } from "lucide-react";
+import { BookOpen, Brain, Calculator, Globe, Lightbulb, ArrowRight } from "lucide-react";
 import OllieAvatar from "@/components/OllieAvatar";
 import SubjectCard from "@/components/SubjectCard";
 import { Button } from "@/components/ui/button";
@@ -23,7 +22,7 @@ const SubjectSelect = () => {
     { 
       id: "science", 
       title: "Science", 
-      icon: <Flask className="h-6 w-6" />, 
+      icon: <Brain className="h-6 w-6" />, 
       color: "bg-omni-sky", 
       progress: 0 
     },

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Check, X, HelpCircle } from "lucide-react";
+import { Check, X, HelpCircle, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import OllieAvatar from "@/components/OllieAvatar";
 import MainLayout from "@/layouts/MainLayout";
