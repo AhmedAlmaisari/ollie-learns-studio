@@ -1,6 +1,6 @@
 
 import { useState, useRef, useEffect } from "react";
-import { Mic, Send, ExternalLink, HelpCircle, Check, X } from "lucide-react";
+import { Mic, Send, ExternalLink, HelpCircle, Check, X, Dna, Vr } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import OllieAvatar from "@/components/OllieAvatar";
 import MainLayout from "@/layouts/MainLayout";
 
 // Define message types for our chat
-type MessageType = 'text' | 'quiz' | 'diagram' | 'video' | 'badge';
+type MessageType = 'text' | 'quiz' | 'diagram' | 'video' | 'badge' | 'artifact';
 
 interface MessageOption {
   text: string;
@@ -32,6 +32,13 @@ interface Message {
   answeredCorrectly?: boolean;
   badgeImage?: string;
   badgeTitle?: string;
+  artifactType?: 'dna' | 'astronomy';
+  artifactContent?: React.ReactNode;
+  artifactButtons?: {
+    label: string;
+    onClick: () => void;
+    icon?: React.ReactNode;
+  }[];
 }
 
 const ChatInterface = () => {
@@ -39,7 +46,7 @@ const ChatInterface = () => {
     {
       id: '1',
       sender: 'ollie',
-      content: "Hi there! I'm Ollie, your learning assistant. What would you like to learn about today?",
+      content: "Hi there! I'm Ollie, your learning assistant. What would you like to learn about today? Try typing '/DNA' to learn about DNA structure or ask about astronomy!",
       type: 'text',
       timestamp: new Date()
     }
@@ -93,6 +100,9 @@ const ChatInterface = () => {
         setActiveSubject(subject);
         generateQuiz(subject);
         break;
+      case "/dna":
+        generateDNAArtifact();
+        break;
       default:
         respondWithUnknownCommand(command);
     }
@@ -102,7 +112,7 @@ const ChatInterface = () => {
     const response: Message = {
       id: Date.now().toString(),
       sender: 'ollie',
-      content: `I'm not familiar with the command "${command}". Try /quiz followed by a subject name.`,
+      content: `I'm not familiar with the command "${command}". Try /quiz followed by a subject name or /DNA to learn about DNA structure.`,
       type: 'text',
       timestamp: new Date()
     };
@@ -116,28 +126,14 @@ const ChatInterface = () => {
     let response: Message;
     
     if (userInput.toLowerCase().includes("dna")) {
-      response = {
-        id: Date.now().toString(),
-        sender: 'ollie',
-        content: "DNA (deoxyribonucleic acid) is a molecule that contains the biological instructions for life. It consists of nucleotides joined in a double helix structure.",
-        type: 'text',
-        timestamp: new Date()
-      };
-      
-      // Add a follow-up message with a diagram
-      setTimeout(() => {
-        const diagramMessage: Message = {
-          id: Date.now().toString(),
-          sender: 'ollie',
-          content: "Here's how the DNA double helix is structured with its base pairs:",
-          type: 'diagram',
-          timestamp: new Date(),
-          diagramUrl: "https://cdn.kastatic.org/googleusercontent/ADt3OwmJlSMOcHQxNXkxqgpmWXtuZC1McUwgODdvR7KKFg5rPaHa6XYH9jnA-LiVuE7B2oKZeqjUxIIXCqYud9w",
-          hint: "The bases always pair in a specific way: Adenine with Thymine, and Cytosine with Guanine."
-        };
-        setMessages(prev => [...prev, diagramMessage]);
-      }, 2000);
-      
+      generateDNAArtifact();
+      return;
+    } else if (userInput.toLowerCase().includes("astronomy") || 
+               userInput.toLowerCase().includes("space") || 
+               userInput.toLowerCase().includes("planet") || 
+               userInput.toLowerCase().includes("star")) {
+      generateAstronomyArtifact();
+      return;
     } else if (userInput.toLowerCase().includes("math") || userInput.toLowerCase().includes("algebra")) {
       response = {
         id: Date.now().toString(),
@@ -163,6 +159,195 @@ const ChatInterface = () => {
     }
     
     setMessages(prev => [...prev, response]);
+  };
+
+  const generateDNAArtifact = () => {
+    const dnaArtifact: Message = {
+      id: Date.now().toString(),
+      sender: 'ollie',
+      content: "DNA (deoxyribonucleic acid) is a molecule composed of two polynucleotide chains that form a double helix carrying genetic instructions.",
+      type: 'artifact',
+      timestamp: new Date(),
+      artifactType: 'dna',
+      artifactContent: (
+        <div className="bg-white/80 p-4 rounded-lg shadow-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <Dna className="h-6 w-6 text-blue-500" />
+            <h3 className="text-lg font-medium">DNA Structure</h3>
+          </div>
+          
+          <div className="aspect-video bg-blue-50 rounded-md mb-3 overflow-hidden">
+            <img 
+              src="https://cdn.kastatic.org/googleusercontent/ADt3OwmJlSMOcHQxNXkxqgpmWXtuZC1McUwgODdvR7KKFg5rPaHa6XYH9jnA-LiVuE7B2oKZeqjUxIIXCqYud9w" 
+              alt="DNA Double Helix" 
+              className="w-full h-full object-contain"
+            />
+          </div>
+          
+          <div className="text-sm space-y-2">
+            <p>
+              <span className="font-medium">Key Features:</span>
+            </p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Double helix structure discovered by Watson and Crick in 1953</li>
+              <li>Made of nucleotides containing a sugar, phosphate, and nitrogenous base</li>
+              <li>Four types of nitrogenous bases: Adenine (A), Thymine (T), Guanine (G), and Cytosine (C)</li>
+              <li>Base pairing is specific: A pairs with T, and G pairs with C</li>
+            </ul>
+          </div>
+          
+          <div className="mt-4 text-xs text-gray-500">
+            The specific sequence of bases carries the genetic information.
+          </div>
+        </div>
+      ),
+      artifactButtons: [
+        {
+          label: "View 3D Model",
+          onClick: () => {
+            setPanelContent({
+              title: "DNA 3D Model",
+              content: (
+                <div className="h-full flex flex-col items-center justify-center">
+                  <div className="bg-blue-50 w-full max-w-md aspect-square rounded-lg flex items-center justify-center mb-4">
+                    <img 
+                      src="https://cdn.kastatic.org/googleusercontent/YuGbEam9Ixl0NzmznP9H6E8MKOBIeYKQiCWL-XA2XVgeVD9Iim6OYiImvOzQiVJNwd4GbTYL-5bUS1IQSuLQc6w" 
+                      alt="DNA 3D Structure" 
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                  <div className="space-y-4 max-w-md px-4">
+                    <h3 className="text-lg font-medium">DNA Double Helix Structure</h3>
+                    <p className="text-sm">
+                      This 3D model shows how the two strands of DNA twist around each other to form a double helix. The colored components represent different parts of the DNA molecule:
+                    </p>
+                    <ul className="list-disc pl-5 text-sm space-y-1">
+                      <li><span className="text-blue-500 font-medium">Blue</span>: Sugar-phosphate backbone</li>
+                      <li><span className="text-red-500 font-medium">Red</span>: Adenine (A)</li>
+                      <li><span className="text-green-500 font-medium">Green</span>: Thymine (T)</li>
+                      <li><span className="text-yellow-500 font-medium">Yellow</span>: Guanine (G)</li>
+                      <li><span className="text-purple-500 font-medium">Purple</span>: Cytosine (C)</li>
+                    </ul>
+                  </div>
+                </div>
+              )
+            });
+            setShowPanel(true);
+          },
+          icon: <ExternalLink className="h-4 w-4" />
+        }
+      ]
+    };
+    
+    setMessages(prev => [...prev, dnaArtifact]);
+  };
+
+  const generateAstronomyArtifact = () => {
+    const astronomyArtifact: Message = {
+      id: Date.now().toString(),
+      sender: 'ollie',
+      content: "Astronomy is the study of celestial objects like stars, planets, and galaxies, as well as the physics and chemistry of the universe.",
+      type: 'artifact',
+      timestamp: new Date(),
+      artifactType: 'astronomy',
+      artifactContent: (
+        <div className="bg-white/80 p-4 rounded-lg shadow-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-500">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M21.17 8s-.38 2.72-2.38 3.25"></path>
+              <path d="M3.95 6.06S6.57 6.44 7.1 4.44"></path>
+              <path d="M10.88 21.94s-.38-2.72 1.62-3.25"></path>
+              <path d="M2.83 16s2.72-.38 3.25 1.62"></path>
+            </svg>
+            <h3 className="text-lg font-medium">Exploring the Cosmos</h3>
+          </div>
+          
+          <div className="aspect-video bg-indigo-50 rounded-md mb-3 overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=600&auto=format&fit=crop" 
+              alt="Galaxy" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          <div className="text-sm space-y-2">
+            <p>
+              <span className="font-medium">Key Concepts:</span>
+            </p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Our solar system contains 8 planets orbiting the Sun</li>
+              <li>The universe is expanding, with galaxies moving away from each other</li>
+              <li>Stars form from clouds of gas and dust called nebulae</li>
+              <li>Black holes are regions where gravity is so strong that nothing can escape</li>
+            </ul>
+          </div>
+        </div>
+      ),
+      artifactButtons: [
+        {
+          label: "View in VR",
+          onClick: () => {
+            setPanelContent({
+              title: "Solar System VR Experience",
+              content: (
+                <div className="h-full flex flex-col items-center justify-center">
+                  <div className="bg-indigo-50 w-full max-w-md aspect-video rounded-lg flex items-center justify-center mb-4 relative">
+                    <img 
+                      src="https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=600&auto=format&fit=crop" 
+                      alt="VR Solar System" 
+                      className="max-w-full max-h-full object-cover rounded-lg"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Vr className="h-12 w-12 text-white drop-shadow-lg" />
+                    </div>
+                  </div>
+                  <div className="space-y-4 max-w-md px-4">
+                    <h3 className="text-lg font-medium">Virtual Reality Solar System Tour</h3>
+                    <p className="text-sm">
+                      In a full VR experience, you would be able to:
+                    </p>
+                    <ul className="list-disc pl-5 text-sm space-y-1">
+                      <li>Fly between planets and moons</li>
+                      <li>Witness cosmic events like solar flares</li>
+                      <li>Explore the surface of Mars and other planets</li>
+                      <li>View the scale and distances of our solar system</li>
+                    </ul>
+                    <div className="mt-4 bg-yellow-100 p-3 rounded-md">
+                      <p className="text-xs text-yellow-800">This is a demonstration. In a real app, this would launch a VR experience.</p>
+                    </div>
+                  </div>
+                </div>
+              )
+            });
+            setShowPanel(true);
+          },
+          icon: <Vr className="h-4 w-4" />
+        },
+        {
+          label: "AR View",
+          onClick: () => {
+            toast({
+              title: "AR Experience",
+              description: "AR mode would launch on a mobile device to overlay planets in your room."
+            });
+          },
+          icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2a1 1 0 0 0-1 1v.38A4 4 0 0 0 9.53 4 1 1 0 1 0 8.47 5.12 2 2 0 0 1 10 7v.38a1 1 0 0 0 2 0V7a2 2 0 0 1 1.53-1.94 1 1 0 1 0-1.06-1.12A4 4 0 0 0 11 3.38V3a1 1 0 0 0-1-1Z"></path>
+            <path d="M12 21a1 1 0 0 0-1 1v.38a1 1 0 0 0 2 0V22a1 1 0 0 0-1-1Z"></path>
+            <path d="M21 12a1 1 0 0 0-1-1h-.38a4 4 0 0 0-.62-1.47 1 1 0 1 0-1.12 1.06A2 2 0 0 1 19 12v.38a1 1 0 0 0 2 0Z"></path>
+            <path d="M2 12a1 1 0 0 0 1 1h.38a1 1 0 0 0 0-2H3a1 1 0 0 0-1 1Z"></path>
+            <path d="M19 14.86a1 1 0 0 0-1.41 0l-.35.35a1 1 0 0 0 1.41 1.41l.35-.35a1 1 0 0 0 0-1.41Z"></path>
+            <path d="M5.65 4.94a1 1 0 0 0-1.41 0l-.35.35a1 1 0 0 0 1.41 1.41l.35-.35a1 1 0 0 0 0-1.41Z"></path>
+            <path d="M8.59 17.76a1 1 0 0 0-1.41 0l-.35.35a1 1 0 1 0 1.41 1.41l.35-.35a1 1 0 0 0 0-1.41Z"></path>
+            <path d="M4.94 18.35a1 1 0 0 0 0-1.41l-.35-.35a1 1 0 0 0-1.41 1.41l.35.35a1 1 0 0 0 1.41 0Z"></path>
+          </svg>
+        }
+      ]
+    };
+    
+    setMessages(prev => [...prev, astronomyArtifact]);
   };
 
   const generateQuiz = (subject: string) => {
@@ -331,6 +516,33 @@ const ChatInterface = () => {
                     </>
                   )}
                   
+                  {message.type === 'artifact' && (
+                    <div className="space-y-3">
+                      <p className="text-sm md:text-base">{message.content}</p>
+                      
+                      <div className="bg-white/20 rounded-lg p-1 backdrop-blur-sm">
+                        {message.artifactContent}
+                      </div>
+                      
+                      {message.artifactButtons && message.artifactButtons.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {message.artifactButtons.map((button, index) => (
+                            <Button 
+                              key={index}
+                              variant="outline" 
+                              size="sm"
+                              className="bg-white/50 backdrop-blur-sm"
+                              onClick={button.onClick}
+                            >
+                              {button.icon && <span className="mr-1">{button.icon}</span>}
+                              {button.label}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
                   {message.type === 'quiz' && (
                     <div>
                       <div className="flex items-center mb-2">
@@ -419,7 +631,7 @@ const ChatInterface = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Type a message or command (try /quiz DNA)..."
+                placeholder="Type a message or command (try /DNA or ask about astronomy)..."
                 className="flex-1"
               />
               
@@ -432,9 +644,12 @@ const ChatInterface = () => {
               </Button>
             </div>
             
-            <div className="flex justify-start mt-2">
+            <div className="flex justify-start mt-2 space-x-2">
               <Badge variant="outline" className="text-xs bg-gray-50">
-                Try: /quiz DNA
+                Try: /DNA
+              </Badge>
+              <Badge variant="outline" className="text-xs bg-gray-50">
+                Ask: Tell me about astronomy
               </Badge>
             </div>
           </div>
